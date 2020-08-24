@@ -16,8 +16,15 @@
 	<header> <nav class="navbar navbar-expand-md navbar-dark"
 		style="background-color: tomato">
 	<div>
-		<a href="https://www.javaguides.net" class="navbar-brand"> Product
-			Management App </a>
+		<a href="https://www.cdc.gov/coronavirus/2019-ncov/symptoms-testing/symptoms.html" class="navbar-brand">About Corona Virus</a>
+	</div>
+	
+	<div>
+		<a href="index.jsp" class="navbar-brand"> Home </a>
+	</div>
+	
+	<div align="right">
+		<div align="right"><a href="index.jsp" class="navbar-brand"> Logout </a></div>
 	</div>
 
 	</nav> </header>

@@ -9,7 +9,7 @@
 </head>
 <body>
 	<h1> Please provide below details</h1>
-	<form method="post" action="">
+	<form method="post" action="product-list.jsp">
 
 		<table>
 

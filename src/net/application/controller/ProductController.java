@@ -2,6 +2,7 @@ package net.application.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -10,8 +11,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import net.application.corona.dao.ProductDaoJdbcImpl;
+import net.application.corona.exception.ProductException;
 import net.application.model.Product;
 
 
@@ -36,7 +37,6 @@ public class ProductController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
 		String action = request.getServletPath();
 		switch (action) {
 		case "/new":
@@ -53,10 +53,40 @@ public class ProductController extends HttpServlet {
 		case "/update":
 			updateProduct(request, response);
 			break;
+
+		case "/delete":
+			deleteUser(request,response);
+			break;
 		default:
-			listUser(request, response);
+			listProduct(request, response);
 			break;
 		}
+
+	}
+
+	private void addToCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			int id = Integer.parseInt(request.getParameter("id"));
+			Product existingProduct = prod.getById(id);
+			request.setAttribute("product", existingProduct);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("AddProductsToCart.jsp");
+			dispatcher.forward(request, response);
+		}catch(ProductException e) {
+			request.setAttribute("errMsg", e.getMessage());	
+		}
+
+	}
+
+	protected void showAllProducts(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			List<Product> listProducts = prod.getAll();
+			RequestDispatcher dispatcher = request.getRequestDispatcher("product-list.jsp");
+			request.setAttribute("listProducts", listProducts);
+			dispatcher.forward(request, response);
+		} catch (ProductException e) {
+			request.setAttribute("errMsg", e.getMessage());
+		}
+
 	}
 
 	/**
@@ -69,56 +99,84 @@ public class ProductController extends HttpServlet {
 
 	}
 
-	private void listUser(HttpServletRequest request, HttpServletResponse response)
-			throws  IOException, ServletException {
-		List<Product> listProducts = prod.getAll();
-		listProducts.forEach(z->{
-			System.out.println(z.getProductName());
-		});
+	private void listProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("listProducts.jsp");
-		request.setAttribute("listProducts", listProducts);
-		dispatcher.forward(request, response);
+		try {
+			List<Product> listProducts = prod.getAll();
+			RequestDispatcher dispatcher = request.getRequestDispatcher("listProducts.jsp");
+			request.setAttribute("listProducts", listProducts);
+			dispatcher.forward(request, response);
+		} catch (ProductException e) {
+			request.setAttribute("errMsg", e.getMessage());
+
+		}
 	}
+
 
 	private void showNewForm(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("newproduct.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("product-form.jsp");
 		dispatcher.forward(request, response);
 	}
 
 	private void showEditForm(HttpServletRequest request, HttpServletResponse response)
 			throws  ServletException, IOException {
-		int id = Integer.parseInt(request.getParameter("id"));
-		Product existingProduct = prod.getById(id);
-		request.setAttribute("product", existingProduct);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("editproduct.jsp");
-		dispatcher.forward(request, response);
+		try {
+			int id = Integer.parseInt(request.getParameter("id"));
+			Product existingProduct = prod.getById(id);
+			request.setAttribute("product", existingProduct);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("product-form.jsp");
+			dispatcher.forward(request, response);
+		}catch(ProductException e) {
+			request.setAttribute("errMsg", e.getMessage());	
+		}
 	}
 
 	private void insertProduct(HttpServletRequest request, HttpServletResponse response) 
 			throws  IOException, ServletException {
-		int productId=Integer.parseInt(request.getParameter("productId"));
-		String productName = request.getParameter("productName");
-		String productDesc = request.getParameter("productDesc");
-		int productPrice = Integer.parseInt(request.getParameter("productPrice"));
-		Product newProduct = new Product(productId,productName, productDesc, productPrice);
-		prod.add(newProduct);
-		response.sendRedirect("list");
+		String view = "";
+		String productName = request.getParameter("name");
+		String productDesc = request.getParameter("desc");
+		int productPrice = Integer.parseInt(request.getParameter("price"));
+		Product newProduct = new Product(productName, productDesc, productPrice);
+		try {
+			prod.add(newProduct);
+			response.sendRedirect("list");
+		} catch (ProductException e) {
+			request.setAttribute("errMsg", e.getMessage());
+		}
 	}
 
 	private void updateProduct(HttpServletRequest request, HttpServletResponse response) 
 			throws  IOException {
-		System.out.println(request.getParameter("productId"));
-		int id=Integer.parseInt(request.getParameter("productId"));
-		String productName = request.getParameter("productName");
-		String productDesc = request.getParameter("productDesc");
-		String price = request.getParameter("productPrice");
-		int productPrice = Integer.parseInt(request.getParameter("productPrice"));
+
+		System.out.println(request.getParameter("id"));
+		int id=Integer.parseInt(request.getParameter("id"));
+		String productName = request.getParameter("name");
+		String productDesc = request.getParameter("desc");
+		int productPrice = Integer.parseInt(request.getParameter("price"));
 		Product newProduct = new Product(id,productName, productDesc, productPrice);
 		System.out.println(newProduct);
-		prod.save(newProduct);
-		response.sendRedirect("list");
+
+		try {
+			prod.save(newProduct);
+			response.sendRedirect("list");
+		} catch (ProductException e) {
+			request.setAttribute("errMsg", e.getMessage());
+		}
+	}
+
+	private void deleteUser(HttpServletRequest request, HttpServletResponse response) 
+			throws  IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
+		try {
+			prod.deleteUser(id);
+			response.sendRedirect("list");
+		} catch (ProductException e) {
+			request.setAttribute("errMsg", e.getMessage());
+		}
+
 	}
 
 }

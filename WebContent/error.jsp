@@ -1,16 +1,18 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1" isErrorPage="true"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+    pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>    
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>Error Page</title>
+<meta charset="ISO-8859-1">
+<title>CMS</title>
 </head>
 <body>
-	<center>
-	<h1>Error</h1>
-	<h2><%=exception.getMessage()%><br></h2>
-	</center>
+	<jsp:include page="header.jsp" />
+	
+	<h3>Err: ${errMsg }</h3>
+	<p>Inconvenience Regretted!
+		Contact Admin if the problem persists!
+	</p>
 </body>
 </html>

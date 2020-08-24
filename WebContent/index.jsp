@@ -13,7 +13,7 @@
 		<input type="button" value="Admin login"
 			onClick="JavaScript:window.location='loginPage.jsp';"> <input
 			type="button" value="Add New User"
-			onClick="JavaScript:window.location='newuser.jsp';">
+			onClick="JavaScript:window.location='addnewuser.jsp';">
 
 	</form>
 </body>

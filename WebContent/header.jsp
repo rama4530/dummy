@@ -4,9 +4,7 @@
 	<nav>
 		<a href="index.jsp">Home</a> 
 		<span>|</span>
-		<a href="newproduct.jsp"> Visitor Page</a>
-		<span>|</span>
-		<a href="editproduct.jsp">Team Page</a>
+		<a href="product-list.jsp">List products</a>
 	</nav>
 	<hr />
 </header>
